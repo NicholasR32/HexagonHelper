@@ -149,7 +149,7 @@ if __name__ == '__main__':
     scan_for_last(records)
 
 
-
+# BUG: apparently it did not scan 157:21 properly
 
 ############# testing stuff
 
