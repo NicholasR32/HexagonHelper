@@ -305,7 +305,7 @@ if __name__ == '__main__':
     root.geometry(f'{window_width}x{window_height}+{window_pos_x}+{window_pos_y}')
 
 
-    button_image_left = tk.PhotoImage(file='arrowleft.png')
-    button_image_right = tk.PhotoImage(file='arrowright.png')
+    button_image_left = tk.PhotoImage(file='imgs/arrowleft.png')
+    button_image_right = tk.PhotoImage(file='imgs/arrowright.png')
 
     draw_all(root, current_level)
