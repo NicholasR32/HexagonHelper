@@ -96,7 +96,7 @@ def draw_text(root, level_name, data):
     global current_level
 
     # Draw level name
-    levelname_label = tk.Label(root, text=level_name, anchor='n', font=('Bump IT UP', 12), background='black', foreground='white', pady=17)
+    levelname_label = tk.Label(root, text=level_name, anchor='n', font=('Bump IT UP', 16), background='black', foreground='white', pady=23)
     levelname_label.grid(row=0, column=1, sticky='ew')
     root.rowconfigure(0, weight=1)
     root.columnconfigure(1, weight=1)
@@ -116,7 +116,7 @@ def draw_text(root, level_name, data):
 
 
     # Draw stats for best time, avg time, total number of attempts
-    stats = calc_stats(data)
+    stats = calc_stats(data[current_level])
     num_attempts_label = tk.Label(root, text=stats[0], padx=40, anchor='center', font=('Bump IT UP', 12), background='black', foreground='white')
     best_attempt_label = tk.Label(root, text=stats[1], padx=40, anchor='center', font=('Bump IT UP', 12), background='black', foreground='white')
     avg_attempt_label = tk.Label(root, text=stats[2], padx=40, anchor='center', font=('Bump IT UP', 12), background='black', foreground='white')
@@ -178,6 +178,7 @@ def switch_level(next):
 
 # Using treeview
 def draw_table(root, data):
+    global current_level
     global window_width
     global window_height
 
@@ -203,21 +204,22 @@ def draw_table(root, data):
     tree.column('date', width=int(window_width*0.95)//2, anchor='center')
     # Style headings (background won't change for some reason)
     style = ttk.Style()
-    style.configure('Treeview.Heading', font=('Bump IT UP', 12), background='black')
+    style.theme_use('clam')
+    style.configure('Treeview.Heading', font=('Bump IT UP', 12), background='black', foreground='white')
+    style.configure('Treeview', background='black', fieldbackground='black')
 
     tree.heading('#0', text='phantom col')
     tree.heading('time', text='time')
     tree.heading('date', text='date')
 
     tree.tag_configure('custom', font=('Bump IT UP', 12), background='black', foreground='white')
-    for temp in enumerate(data):
-        item = temp
+    for item in enumerate(data[current_level]):
+        entry = []
         index = str(item[0])
-        entry = item[1]
-
-
+        
         # Reformat the time part of the entry
-        entry[0] = str(entry[0][0] + ":" + entry[0][1])
+        entry.append((str(item[1][0][0]) + ":" + str(item[1][0][1])))
+        entry.append(item[1][1])
         # print(f'adding {entry}')
 
         # Root of Treeview table is represented by empty string
@@ -230,7 +232,7 @@ def draw_all(root, current_level):
     global level_bg_colors
     global level_name_colors
     global level_names
-    global table
+    global tables
 
     for widget in root.winfo_children():
         widget.destroy()
@@ -243,8 +245,8 @@ def draw_all(root, current_level):
 
     cycle_color(app_frame, level_bg_colors[current_level][0], level_bg_colors[current_level][1])
 
-    draw_text(app_frame, level_names[current_level], table)
-    draw_table(app_frame, table)
+    draw_text(app_frame, level_names[current_level], tables)
+    draw_table(app_frame, tables)
 
     root.mainloop()
 
@@ -267,25 +269,39 @@ if __name__ == '__main__':
                          [hex_to_rgb("#5B52D2"), hex_to_rgb("#F80483")],
                          [hex_to_rgb("#F9F9F9"), hex_to_rgb("#F9F9F9")]]
 
-    table = [[['10', '30'], '02/29/24 07:47:18 PM'],
-             [['70', '01'], '02/29/24 07:48:35 PM'],
-             [['6', '41'], '02/29/24 07:48:47 PM'],
-             [['90', '38'], '02/29/24 07:50:19 PM'],
-             [['5', '49'], '02/29/24 07:50:34 PM'],
-             [['2', '13'], '02/29/24 07:50:50 PM'],
-             [['6', '39'], '02/29/24 07:51:05 PM'],
-             [['3', '19'], '02/29/24 07:51:15 PM'],
-             [['35', '59'], '02/29/24 07:52:19 PM'],
-             [['10', '30'], '02/29/24 07:47:18 PM'],
-             [['70', '02'], '02/29/24 07:48:35 PM'],
-             [['6', '41'], '02/29/24 07:48:47 PM'],
-             [['89', '39'], '02/29/24 07:50:19 PM'],
-             [['5', '49'], '02/29/24 07:50:34 PM'],
-             [['2', '13'], '02/29/24 07:50:50 PM'],
-             [['6', '39'], '02/29/24 07:51:05 PM'],
-             [['3', '19'], '02/29/24 07:51:15 PM'],
-             [['5', '15'], '02/29/24 07:51:22 PM'],
-             [['35', '59'], '02/29/24 07:52:19 PM']]
+    tables = [
+                [
+                    [['10', '30'], '02/29/24 07:47:18 PM'],
+                    [['70', '01'], '02/29/24 07:48:35 PM'],
+                    [['6', '41'], '02/29/24 07:48:47 PM'],
+                    [['90', '38'], '02/29/24 07:50:19 PM'],
+                    [['5', '49'], '02/29/24 07:50:34 PM']
+                ],
+                [
+                    [['2', '13'], '02/29/24 07:50:50 PM'],
+                    [['6', '39'], '02/29/24 07:51:05 PM'],
+                    [['3', '19'], '02/29/24 07:51:15 PM'],
+                    [['35', '59'], '02/29/24 07:52:19 PM']
+                ],
+                [
+                    [['10', '30'], '02/29/24 07:47:18 PM'],
+                    [['70', '02'], '02/29/24 07:48:35 PM'],
+                    [['6', '41'], '02/29/24 07:48:47 PM'],
+                    [['89', '39'], '02/29/24 07:50:19 PM']
+                ],
+                [
+                    [['5', '49'], '02/29/24 07:50:34 PM'],
+                    [['2', '13'], '02/29/24 07:50:50 PM'],
+                    [['6', '39'], '02/29/24 07:51:05 PM'],
+                    [['3', '19'], '02/29/24 07:51:15 PM']
+                ],
+                [
+                    [['5', '15'], '02/29/24 07:51:22 PM']
+                ],
+                [
+                    [['35', '59'], '02/29/24 07:52:19 PM']
+                ]
+            ]
 
     current_level = 0
     root = tk.Tk()
